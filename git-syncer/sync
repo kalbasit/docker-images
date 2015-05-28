@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eo pipefail
+
+if [ "$#" -ne 2 ]; then
+  echo "USAGE: $0 <clone url> <push url>"
+  exit 1
+fi
+
+p=`echo ${1} | sed -r -e 's#.*(://|@)(.*)/[^/]*(\.git|$)#\2#g' -e 's#:#/#g'`
+r=`echo ${1} | sed -r -e 's#.*/([^/]*)(\.git|$)#\1#g'`
+
+eval `ssh-agent`
+if [ -r $HOME/.ssh/id_rsa ]; then
+  ssh-add $HOME/.ssh/id_rsa
+fi
+
+if [ -n "$SSH_KEY" ]; then
+  echo -e "$SSH_KEY" > $HOME/.ssh/$r
+  chmod 400 $HOME/.ssh/$r
+  ssh-add $HOME/.ssh/$r
+fi
+
+mkdir -p /data/$p
+cd /data/$p
+
+if [ ! -d ${r}.git ]; then
+  git clone --bare $1
+  cd ${r}.git
+  git config remote.origin.pushurl $2
+else
+  cd ${r}.git
+fi
+
+ssh-add -l
+git fetch --force
+git fetch --force --tags
+git push --force --all
+git push --force --tags
