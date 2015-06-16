@@ -1,0 +1,16 @@
+[Unit]
+Description=MySQL server
+Requires=docker.service mysql.service
+After=docker.service mysql.service
+
+[Service]
+EnvironmentFile=/etc/sysconfig/mysql
+ExecStartPre=/bin/sh -c "docker inspect mysql >/dev/null 2>&1 && docker rm -f mysql || true"
+ExecStartPre=/bin/sh -c "docker run --name mysql_volumes -v /home/persistence/mysql/data:/var/lib/mysql -v /home/persistence/mysql/conf.d:/etc/mysql/conf.d busybox true 2>/dev/null || true"
+ExecStartPre=/usr/bin/docker create --name mysql -p 3306:3306 --volumes-from mysql_volumes $OPTIONS mysql
+ExecStart=/usr/bin/docker start -a mysql
+ExecStop=/usr/bin/docker stop mysql
+ExecStopPost=/usr/bin/docker rm -f mysql
+
+[Install]
+WantedBy=multi-user.target
