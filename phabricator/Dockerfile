@@ -27,13 +27,12 @@ RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
       && a2enmod rewrite \
       && ln -s /etc/apache2/sites-available/phabricator.conf \
           /etc/apache2/sites-enabled/phabricator.conf \
-      && rm -f /etc/apache2/sites-enabled/000-default.conf
+      && rm -f /etc/apache2/sites-enabled/000-default.conf \
+      && chown -R www-data:www-data /opt/phabricator \
+      && adduser --home /var/repo --no-create-home --disabled-password --gid 33 git
 
 ADD start.sh /usr/bin/start_server
 ADD phabricator.conf /etc/apache2/sites-available/phabricator.conf
-
-# Fix the permissions
-RUN chown -R www-data:www-data /opt/phabricator /var/repo
 
 EXPOSE  80 22
 WORKDIR /opt/phabricator
