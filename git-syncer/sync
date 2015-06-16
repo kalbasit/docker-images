@@ -34,5 +34,4 @@ fi
 ssh-add -l
 git fetch --force
 git fetch --force --tags
-git push --force --all
-git push --force --tags
+git push --mirror
