@@ -17,4 +17,4 @@ The git_syncer mounts the volume `/data`. It's recommanded to mount
 docker run --name git_syncer_volumes -v /data busybox true 2>/dev/null || true
 ```
 
-Take a look at the examples folder for a systemd example.
+Basic Systemd files in contrib/
