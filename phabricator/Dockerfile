@@ -6,7 +6,7 @@ FROM debian:jessie
 MAINTAINER  Wael Nasreddine <wael.nasreddine@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-  PHABRICATOR_COMMIT=c2a2933848b6cdd18ed25dfde46a90eb9039f406 \
+  PHABRICATOR_COMMIT=2a5cf5e1b76c7f375326e2b9eb1239b959d77138 \
   ARCANIST_COMMIT=9a7c4d87a850ba0b61f100d68f2b8765c7e7fca5 \
   LIBPHUTIL_COMMIT=3b4da3f3315328bc616e0ba6413fb441952d53c9
 
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
           /etc/apache2/sites-enabled/phabricator.conf \
       && rm -f /etc/apache2/sites-enabled/000-default.conf \
       && chown -R www-data:www-data /opt/phabricator \
-      && adduser --home /var/repo --no-create-home --disabled-password --gid 33 git \
+      && adduser --home /var/repo --no-create-home --disabled-password git \
       && echo 'git ALL=(www-data) SETENV: NOPASSWD: /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/hg, /usr/bin/svnserve' >> /etc/sudoers
 
 ADD start.sh /usr/bin/start_server
