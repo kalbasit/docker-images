@@ -14,7 +14,7 @@ ADD download.sh /download.sh
 RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
         libmysqlclient18 mercurial mysql-client php-apc php5 php5-apcu php5-cli \
         php5-curl php5-gd php5-json php5-ldap php5-mysql python-pygments \
-        sendmail subversion tar \
+        sendmail subversion tar sudo openssh-server \
       && apt-get clean && rm -rf /var/lib/apt/lists/* \
       && /download.sh phabricator "${PHABRICATOR_COMMIT}" \
       && /download.sh arcanist    "${ARCANIST_COMMIT}" \
@@ -29,10 +29,13 @@ RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
           /etc/apache2/sites-enabled/phabricator.conf \
       && rm -f /etc/apache2/sites-enabled/000-default.conf \
       && chown -R www-data:www-data /opt/phabricator \
-      && adduser --home /var/repo --no-create-home --disabled-password --gid 33 git
+      && adduser --home /var/repo --no-create-home --disabled-password --gid 33 git \
+      && echo 'git ALL=(www-data) SETENV: NOPASSWD: /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/hg, /usr/bin/svnserve' >> /etc/sudoers
 
 ADD start.sh /usr/bin/start_server
 ADD phabricator.conf /etc/apache2/sites-available/phabricator.conf
+ADD sshd_config /etc/ssh/sshd_config
+ADD ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
 
 EXPOSE  80 22
 WORKDIR /opt/phabricator

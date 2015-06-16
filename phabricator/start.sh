@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Start the ssh server
+mkdir -p /usr/libexec /var/run/sshd
+/usr/sbin/sshd
+
 # Start the daemons
 su -s /bin/sh -c '/opt/phabricator/bin/phd start' www-data
 
