@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
   LIBPHUTIL_COMMIT=81eed10bea576ad0bd4087107c0beae1af7827a8
 
 ADD download.sh /download.sh
-RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
+RUN apt-get update && apt-get install -y build-essential git apache2 curl libapache2-mod-php5 \
         libmysqlclient18 mercurial mysql-client php-apc php5 php5-apcu php5-cli \
         php5-curl php5-gd php5-json php5-ldap php5-mysql python-pygments \
         sendmail subversion tar sudo openssh-server \
@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
       && /download.sh phabricator "${PHABRICATOR_COMMIT}" \
       && /download.sh arcanist    "${ARCANIST_COMMIT}" \
       && /download.sh libphutil   "${LIBPHUTIL_COMMIT}" \
+      && /opt/libphutil/scripts/build_xhpast.php \
       && sed -e 's/post_max_size =.*/post_max_size = 32M/' \
           -e 's/upload_max_filesize =.*/upload_max_filesize = 32M/' \
           -e 's/;opcache.validate_timestamps=.*/opcache.validate_timestamps=0/' \
@@ -30,7 +31,9 @@ RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
       && rm -f /etc/apache2/sites-enabled/000-default.conf \
       && chown -R www-data:www-data /opt/phabricator \
       && adduser --home /var/repo --no-create-home --disabled-password git \
-      && echo 'git ALL=(www-data) SETENV: NOPASSWD: /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/hg, /usr/bin/svnserve' >> /etc/sudoers
+      && echo 'git ALL=(www-data) SETENV: NOPASSWD: /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/hg, /usr/bin/svnserve' >> /etc/sudoers \
+      && apt-get remove -y build-essential \
+      && apt-get autoremove -y
 
 ADD start.sh /usr/bin/start_server
 ADD phabricator.conf /etc/apache2/sites-available/phabricator.conf
