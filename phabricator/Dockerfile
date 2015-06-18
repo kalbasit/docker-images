@@ -6,9 +6,9 @@ FROM debian:jessie
 MAINTAINER  Wael Nasreddine <wael.nasreddine@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-  PHABRICATOR_COMMIT=2a5cf5e1b76c7f375326e2b9eb1239b959d77138 \
+  PHABRICATOR_COMMIT=46a225c7b1cba077979b59166211011cf939cdce \
   ARCANIST_COMMIT=9a7c4d87a850ba0b61f100d68f2b8765c7e7fca5 \
-  LIBPHUTIL_COMMIT=3b4da3f3315328bc616e0ba6413fb441952d53c9
+  LIBPHUTIL_COMMIT=81eed10bea576ad0bd4087107c0beae1af7827a8
 
 ADD download.sh /download.sh
 RUN apt-get update && apt-get install -y git apache2 curl libapache2-mod-php5 \
