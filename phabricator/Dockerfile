@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y build-essential git apache2 curl libapa
         php5-curl php5-gd php5-json php5-ldap php5-mysql python-pygments \
         sendmail subversion tar sudo openssh-server \
       && apt-get clean && rm -rf /var/lib/apt/lists/* \
+      && ln -s /usr/lib/git-core/git-http-backend /usr/bin/git-http-backend \
       && /download.sh phabricator "${PHABRICATOR_COMMIT}" \
       && /download.sh arcanist    "${ARCANIST_COMMIT}" \
       && /download.sh libphutil   "${LIBPHUTIL_COMMIT}" \
