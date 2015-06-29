@@ -1,14 +1,10 @@
-#
-# Docker image for running https://github.com/phacility/phabricator
-#
-
 FROM debian:jessie
 MAINTAINER  Wael Nasreddine <wael.nasreddine@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-  PHABRICATOR_COMMIT=46a225c7b1cba077979b59166211011cf939cdce \
-  ARCANIST_COMMIT=9a7c4d87a850ba0b61f100d68f2b8765c7e7fca5 \
-  LIBPHUTIL_COMMIT=81eed10bea576ad0bd4087107c0beae1af7827a8
+  PHABRICATOR_COMMIT=6b7183a76232cba02490585cdba1c3acbff56ca3 \
+  ARCANIST_COMMIT=29839e8c72c569171069272ac824e025883cb634 \
+  LIBPHUTIL_COMMIT=ea6830cc8019f512e0f3eba4045fb5bdad4c2ced
 
 ADD download.sh /download.sh
 RUN apt-get update && apt-get install -y build-essential git apache2 curl libapache2-mod-php5 \
