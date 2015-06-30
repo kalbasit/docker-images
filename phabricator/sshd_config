@@ -1,11 +1,11 @@
 # NOTE: You must have OpenSSHD 6.2 or newer; support for AuthorizedKeysCommand
 # was added in this version.
 
-# NOTE: Edit these to the correct values for your setup.
-
 AuthorizedKeysCommand /usr/libexec/phabricator-ssh-hook.sh
 AuthorizedKeysCommandUser git
 AllowUsers git
+PidFile /var/run/sshd-phabricator.pid
+HostKey /etc/ssh/keys/ssh_host_rsa_key
 
 # You may need to tweak these options, but mostly they just turn off everything
 # dangerous.
@@ -19,5 +19,3 @@ PrintMotd no
 PrintLastLog no
 PasswordAuthentication no
 AuthorizedKeysFile none
-
-PidFile /var/run/sshd-phabricator.pid

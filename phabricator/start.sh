@@ -12,6 +12,13 @@ if [ -n "${LOCAL_JSON}" ]; then
   chown www-data: /opt/phabricator/conf/local/local.json
 fi
 
+# Generate the SSH key if one is not present
+if [ ! -f "/etc/ssh/keys/ssh_host_rsa_key" ]; then
+  echo "Creating SSH2 RSA key; this may take some time ..."
+  ssh-keygen -q -f /etc/ssh/keys/ssh_host_rsa_key -N '' -t rsa
+  ssh-keygen -l -f /etc/ssh/keys/ssh_host_rsa_key.pub
+fi
+
 # Start the ssh server
 mkdir -p /usr/libexec /var/run/sshd
 /usr/sbin/sshd

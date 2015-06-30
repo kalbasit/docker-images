@@ -6,16 +6,19 @@ ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
   ARCANIST_COMMIT=29839e8c72c569171069272ac824e025883cb634 \
   LIBPHUTIL_COMMIT=ea6830cc8019f512e0f3eba4045fb5bdad4c2ced
 
-ADD download.sh /download.sh
 RUN apt-get update && apt-get install -y build-essential git apache2 curl libapache2-mod-php5 \
         libmysqlclient18 mercurial mysql-client php-apc php5 php5-apcu php5-cli \
         php5-curl php5-gd php5-json php5-ldap php5-mysql python-pygments \
         sendmail subversion tar sudo openssh-server \
       && apt-get clean && rm -rf /var/lib/apt/lists/* \
+      && rm -f /etc/ssh_host_* \
       && ln -s /usr/lib/git-core/git-http-backend /usr/bin/git-http-backend \
-      && /download.sh phabricator "${PHABRICATOR_COMMIT}" \
-      && /download.sh arcanist    "${ARCANIST_COMMIT}" \
-      && /download.sh libphutil   "${LIBPHUTIL_COMMIT}" \
+      && curl -L https://github.com/phacility/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar -xzf - \
+      && mv phabricator-${PHABRICATOR_COMMIT} /opt/phabricator \
+      && curl -L https://github.com/phacility/arcanist/archive/${ARCANIST_COMMIT}.tar.gz | tar -xzf - \
+      && mv arcanist-${ARCANIST_COMMIT} /opt/arcanist \
+      && curl -L https://github.com/phacility/libphutil/archive/${LIBPHUTIL_COMMIT}.tar.gz | tar -xzf - \
+      && mv libphutil-${LIBPHUTIL_COMMIT} /opt/libphutil \
       && /opt/libphutil/scripts/build_xhpast.php \
       && sed -e 's/post_max_size =.*/post_max_size = 32M/' \
           -e 's/upload_max_filesize =.*/upload_max_filesize = 32M/' \
@@ -39,5 +42,5 @@ ADD ssh-hook.sh /usr/libexec/phabricator-ssh-hook.sh
 
 EXPOSE  80 22
 WORKDIR /opt/phabricator
-VOLUME ["/opt/phabricator/conf/local", "/var/repo"]
+VOLUME  ["/opt/phabricator/conf/local", "/var/repo", "/etc/ssh/keys"]
 CMD     ["/usr/bin/start_server"]

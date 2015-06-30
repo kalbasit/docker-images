@@ -5,7 +5,7 @@ After=docker.service mysql.service
 
 [Service]
 ExecStartPre=/bin/sh -c "docker inspect phabricator >/dev/null 2>&1 && docker rm -f phabricator || true"
-ExecStartPre=/bin/sh -c "docker run --name phabricator_volumes -v /home/persistence/phabricator/local:/opt/phabricator/conf/local -v /home/persistence/phabricator/repo:/var/repo -v /home/persistence/phabricator/storage:/mnt/storage busybox true 2>/dev/null || true"
+ExecStartPre=/bin/sh -c "docker run --name phabricator_volumes -v /home/persistence/phabricator/ssh_keys:/etc/ssh/keys -v /home/persistence/phabricator/local:/opt/phabricator/conf/local -v /home/persistence/phabricator/repo:/var/repo busybox true 2>/dev/null || true"
 ExecStartPre=/usr/bin/docker create --name phabricator -p 8000:80 -p 8001:22 --volumes-from phabricator_volumes kalbasit/phabricator
 ExecStart=/usr/bin/docker start -a phabricator
 ExecStop=/usr/bin/docker stop phabricator
