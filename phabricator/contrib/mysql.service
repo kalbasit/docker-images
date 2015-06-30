@@ -1,7 +1,7 @@
 [Unit]
 Description=MySQL server
-Requires=docker.service mysql.service
-After=docker.service mysql.service
+Requires=docker.service
+After=docker.service
 
 [Service]
 EnvironmentFile=/etc/sysconfig/mysql
