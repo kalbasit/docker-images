@@ -19,6 +19,11 @@ if [ ! -f "/etc/ssh/keys/ssh_host_rsa_key" ]; then
   ssh-keygen -l -f /etc/ssh/keys/ssh_host_rsa_key.pub
 fi
 
+# Make sure permissions are good
+chown -R www-data:www-data /var/repo
+chown root:root /opt/phabricator/conf/local/local.json
+chmod 644 /opt/phabricator/conf/local/local.json
+
 # Start the ssh server
 mkdir -p /usr/libexec /var/run/sshd
 /usr/sbin/sshd

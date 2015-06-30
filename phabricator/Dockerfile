@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y build-essential git apache2 curl libapa
         php5-curl php5-gd php5-json php5-ldap php5-mysql python-pygments \
         sendmail subversion tar sudo openssh-server \
       && apt-get clean && rm -rf /var/lib/apt/lists/* \
-      && rm -f /etc/ssh_host_* \
+      && rm -f /etc/ssh/ssh_host_* \
       && ln -s /usr/lib/git-core/git-http-backend /usr/bin/git-http-backend \
       && curl -L https://github.com/phacility/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar -xzf - \
       && mv phabricator-${PHABRICATOR_COMMIT} /opt/phabricator \
