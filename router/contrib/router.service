@@ -5,7 +5,7 @@ After=docker.service
 
 [Service]
 ExecStartPre=/bin/sh -c "docker inspect router >/dev/null 2>&1 && docker rm -f router || true"
-ExecStartPre=/bin/sh -c "docker run --name router_volumes -v /opt/nginx/conf/sites -v /opt/nginx/conf/streams busybox true 2>/dev/null || true"
+ExecStartPre=/bin/sh -c "docker run --name router_volumes -v /home/persistence/router/sites:/opt/nginx/conf/sites -v /home/persistence/router/streams:/opt/nginx/conf/streams busybox true 2>/dev/null || true"
 ExecStartPre=/usr/bin/docker create --name router -p 22:22 -p 80:80 -p 443:443 --volumes-from router_volumes kalbasit/router
 ExecStart=/usr/bin/docker start -a router
 ExecStop=/usr/bin/docker stop router
