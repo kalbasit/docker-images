@@ -1,8 +1,10 @@
 FROM debian:jessie
 MAINTAINER  Wael Nasreddine <wael.nasreddine@gmail.com>
 
-ENV DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-  PHABRICATOR_COMMIT=6b7183a76232cba02490585cdba1c3acbff56ca3 \
+ENV DEBIAN_FRONTEND=noninteractive \
+  DEBCONF_NONINTERACTIVE_SEEN=true \
+  PHABRICATOR_USER=kalbasit \
+  PHABRICATOR_COMMIT=3de69485e20eafb34d7e8072794fbc36d15e5fb4 \
   ARCANIST_COMMIT=29839e8c72c569171069272ac824e025883cb634 \
   LIBPHUTIL_COMMIT=ea6830cc8019f512e0f3eba4045fb5bdad4c2ced
 
@@ -13,7 +15,7 @@ RUN apt-get update && apt-get install -y build-essential git apache2 curl libapa
       && apt-get clean && rm -rf /var/lib/apt/lists/* \
       && rm -f /etc/ssh/ssh_host_* \
       && ln -s /usr/lib/git-core/git-http-backend /usr/bin/git-http-backend \
-      && curl -L https://github.com/phacility/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar -xzf - \
+      && curl -L https://github.com/${PHABRICATOR_USER}/phabricator/archive/${PHABRICATOR_COMMIT}.tar.gz | tar -xzf - \
       && mv phabricator-${PHABRICATOR_COMMIT} /opt/phabricator \
       && curl -L https://github.com/phacility/arcanist/archive/${ARCANIST_COMMIT}.tar.gz | tar -xzf - \
       && mv arcanist-${ARCANIST_COMMIT} /opt/arcanist \
