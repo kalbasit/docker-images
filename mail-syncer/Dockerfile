@@ -16,4 +16,4 @@ COPY start-daemon /usr/bin/start-daemon
 VOLUME /var/lib/mail-syncer
 VOLUME /etc/mail-syncer
 
-CMD ["offlineimap", "-c", "/etc/mail-syncer/offlineimaprc", "-u basic"]
+CMD ["offlineimap", "-c", "/etc/mail-syncer/offlineimaprc", "-u", "basic"]
