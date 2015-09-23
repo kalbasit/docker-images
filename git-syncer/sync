@@ -24,7 +24,7 @@ mkdir -p /data/$p
 cd /data/$p
 
 if [ ! -d ${r}.git ]; then
-  git clone --bare $1
+  git clone --mirror $1
   cd ${r}.git
   git config remote.origin.pushurl $2
 else
