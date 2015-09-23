@@ -1,0 +1,14 @@
+[Unit]
+Description=Mail syncer
+Requires=docker.service
+After=docker.service
+
+[Service]
+ExecStartPre=/bin/sh -c "docker inspect mail-syncer >/dev/null 2>&1 && docker rm -f mail-syncer || true"
+ExecStartPre=/usr/bin/docker create --name mail-syncer -v /home/persistence/mail-syncer/conf:/etc/mail-syncer -v /home/persistence/mail-syncer/data:/var/lib/mail-syncer kalbasit/mail-syncer
+ExecStart=/usr/bin/docker start -a mail-syncer
+ExecStop=/usr/bin/docker stop mail-syncer
+ExecStopPost=/usr/bin/docker rm -f mail-syncer
+
+[Install]
+WantedBy=multi-user.target
