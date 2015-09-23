@@ -11,6 +11,8 @@ RUN cd /tmp \
   && make install \
   && rm -rf /tmp/notmuch
 
+COPY start-daemon /usr/bin/start-daemon
+
 VOLUME /var/lib/mail-syncer
 VOLUME /etc/mail-syncer
 
