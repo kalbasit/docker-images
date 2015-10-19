@@ -21,17 +21,16 @@ MOUNT ../tools/copy.sh:/bin/copy
 
 RUN mkdir -p /workspace \
   && copy /workspace /usr/bin/notmuch /usr/include/notmuch.h \
-    /usr/lib/libnotmuch.so* $(deps /usr/bin/notmuch) \
-    /bin/sh $(deps /bin/sh)
+    /usr/lib/libnotmuch.so* $(deps /usr/bin/notmuch)
 
 EXPORT /workspace/ /
 
 ##############
 # The runtime image
 
-FROM scratch
+FROM alpine
 IMPORT /
-CMD ["notmuch"]
+CMD ["sh"]
 
 ##############
 # Push the image
