@@ -1,7 +1,7 @@
 ##############
 # The environment
 
-REQUIRE ["COMMIT", "TRAVIS_BUILD_NUMBER"]
+REQUIRE ["TRAVIS_COMMIT", "TRAVIS_BUILD_NUMBER"]
 ENV NOTMUCH_VERSION=0.20.2
 
 ##############
@@ -39,5 +39,5 @@ CMD ["notmuch"]
 ##############
 # Push the image
 
-PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .COMMIT }}
+PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .TRAVIS_COMMIT }}
 PUSH kalbasit/notmuch:latest
