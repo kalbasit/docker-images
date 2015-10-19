@@ -5,7 +5,7 @@ script: true
 after_success:
   - curl -LO https://github.com/grammarly/rocker/releases/download/0.2.2/rocker-0.2.2_linux_amd64.tar.gz
   - tar -xf rocker-0.2.2_linux_amd64.tar.gz
-  - ./tools/build.sh
+  - for i in */Rockerfile; do ./rocker build -f $i -var TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER -var COMMIT=$COMMIT --push --auth $DOCKER_USER:$DOCKER_PASS; done
 env:
   global:
       # DOCKER_USER
