@@ -37,5 +37,5 @@ CMD ["notmuch"]
 ##############
 # Push the image
 
-PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .TRAVIS_COMMIT }}
+PUSH kalbasit/notmuch:${NOTMUCH_VERSION}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .TRAVIS_COMMIT }}
 PUSH kalbasit/notmuch:latest
