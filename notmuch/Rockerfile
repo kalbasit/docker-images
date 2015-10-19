@@ -1,11 +1,9 @@
-REQUIRE ["TRAVIS_COMMIT", "TRAVIS_BUILD_NUMBER"]
+REQUIRE ["NOTMUCH_VERSION", "TRAVIS_COMMIT", "TRAVIS_BUILD_NUMBER"]
 
 ##############
 # The build image
 
 FROM alpine
-
-ENV NOTMUCH_VERSION=0.20.2
 
 RUN apk add --update-cache git make gcc g++ zlib xapian-core-dev \
     gmime-dev talloc-dev \
@@ -37,5 +35,5 @@ CMD ["notmuch"]
 ##############
 # Push the image
 
-PUSH kalbasit/notmuch:${NOTMUCH_VERSION}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .TRAVIS_COMMIT }}
+PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .TRAVIS_COMMIT }}
 PUSH kalbasit/notmuch:latest

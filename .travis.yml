@@ -13,5 +13,10 @@ after_success:
   - curl -LO https://github.com/grammarly/rocker/releases/download/0.2.2/rocker-0.2.2_linux_amd64.tar.gz
   - tar -xf rocker-0.2.2_linux_amd64.tar.gz
   - for i in */Rockerfile; do
-      ./rocker build --file $i --var TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var TRAVIS_COMMIT=${TRAVIS_COMMIT::8} --push --auth $DOCKER_USER:$DOCKER_PASS;
+      rocker_args=""
+      rocker_args_file="`dirname $i`/rocker_args"
+      if [[ -r $rocker_args_file ]]; then
+        rocker_args="`cat $rocker_args_file`"
+      fi
+      ./rocker build --file $i ${rocker_args} --var TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var TRAVIS_COMMIT=${TRAVIS_COMMIT::8} --push --auth $DOCKER_USER:$DOCKER_PASS;
     done
