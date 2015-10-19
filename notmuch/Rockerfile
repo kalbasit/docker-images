@@ -1,0 +1,43 @@
+##############
+# The environment
+
+REQUIRE ["COMMIT", "TRAVIS_BUILD_NUMBER"]
+ENV NOTMUCH_VERSION=0.20.2
+
+##############
+# The build image
+
+FROM alpine
+
+RUN apk add --update-cache git make gcc g++ zlib xapian-core-dev \
+    gmime-dev talloc-dev \
+  && curl -Lo notmuch.tar.gz https://github.com/notmuch/notmuch/archive/${NOTMUCH_VERSION}.tar.gz \
+  && tar -xzf notmuch.tar.gz \
+  && cd notmuch-${NOTMUCH_VERSION} \
+  && ./configure --prefix=/usr \
+  && make install
+
+##############
+# Export what we need
+
+MOUNT ../tools/deps.sh:/bin/deps
+MOUNT ../tools/copy.sh:/bin/copy
+
+RUN mkdir -p /workspace \
+  && copy /workspace /usr/bin/notmuch /usr/include/notmuch.h \
+    /usr/lib/libnotmuch.so* $(deps /usr/bin/notmuch)
+
+EXPORT /workspace/ /
+
+##############
+# The runtime image
+
+FROM scratch
+IMPORT /
+CMD ["notmuch"]
+
+##############
+# Push the image
+
+PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .COMMIT }}
+PUSH kalbasit/notmuch:latest
