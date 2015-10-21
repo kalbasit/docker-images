@@ -10,14 +10,14 @@ env:
     - secure: jqGcIMtNQxMZcp3nwGgVv7GpAUoKoE1sXDb204pQVZiWk+bW2TdpcRLXwghUgLsNK3zdLsotTy2hcUEcbBQOpkOIHqSxfVewDp2dE+DBBWi5QlQEH13uIjF2F3yKpiY2EfEAIdIFz+NFLj22wchX1Sf9j4rPzRYCHRy04XpVlMN5AqYs3PcfntpbvqV35xWGGKbe+uf6mogJXcXV39e8S1y4bsC+ma9jMqtAFxV8dnMTwXMj1Ng/u331a4YtHtzhGMrIgB+feeTCN4tm1EyXDyzm0MaIl4nPE6lf+9+ckHKlvEyqaTBoKltdau+fnvlq/8g1udxYPPlG+GRJIFt4OR1EBL3uDIJy12gBwmDOfCEJ8LDq2y4wYfYsiD3Ve1kcrGESt0Ihx4kupFEqGTTbXvCgavGKzGiuF+7dn0QAtp6k2cN3mBtIlj1zvDUiWfuj1NBW5igowZ5X0tkEdU5KkYjW7/3FBSApASgQQA/GvuZE8lFfd6RZD5YcAtCLiNqt+Lye6mqVDbNS6dNhvgMht1TRuIxADNdmxMNCCK6nVOlI5ED7PJ4Isx/i7/1jkQuZ+WP0Sw0LX/qtcPR3MZ44zxDVArF1IvMWwDhuKfIIg/Qfp81czAqO3Czn987AFbK20P+PsbgYbqh21KDnES1hgXp4WyenxttE6BjbJVA6fBY=
       # DOCKER_PASS
     - secure: riwZUJZcx1szGE1PQi6X17YGNrAYC4FKoInMyXu+6F/nLqwp2yiOnfneIzfWWBmM07AFIQe/S8wcTmRBstHNbKBob6oLLVU07/J3eyLNMtbrQdsd7iQw0LHpIph6d0JbpSnQw/mkr5tgF9FMj61xWeO7EDuksUMk1QRTMEJTM7n6ae8wZy2tqWDma1hIWGnvNqXjUV8/c11L6Sx6kw+MSEuS0Rv9vwn6ZZEGI0vKSVSdZQDtjEpUAF/RUH1aHV5hLWtQz9iAJs/eZAvqT77bqDF4wB5lG37Tr/8+pYlGmZdKYo/jbghUkp85GF2J33pQnHcrfzlqs+5NcExaYDWl1rEB5H+a3hzfcG9t2NqBN/mQ0NkXeEsoRYHBiJImJY1uflp5/R1tJAyl8nOyTo0sxryTvBO05amAC8veqMW8fabxHjd9YU+VHAc6DyYsW7An5DGyC/15tuoR/5cdkEuw3uXANEcsvbwXLBnAmljxHqZlQfaZwlT3bukQTbCyQIZJw5iQ+6AtuXzoifny7sTZC7rwiSpegJUJP35wMOqX4bww2j8HypFSpYANsfD5yg50Cl82u3TiKw7AixohHTjLkBJ3MgBqfFR1aGmON0cvzrZ0X3xH3TLKJyEztD8D+dejKl6RbLJuEKASXqD7TFeqZuWuLIIWx2Pq5uaWtS/U59Y=
-script: true
-after_success:
+before_script:
   - curl -L https://github.com/grammarly/rocker/releases/download/${ROCKER_VERSION}/rocker-${ROCKER_VERSION}_linux_amd64.tar.gz | sudo tar -C /usr/bin -xzf -
-  - for i in */Rockerfile; do
-      rocker_args="";
-      rocker_args_file="`dirname $i`/rocker_args";
-      if [[ -r $rocker_args_file ]]; then
-        rocker_args="`cat $rocker_args_file`";
-      fi;
-      ./rocker build --file $i ${rocker_args} --var BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var COMMIT=${COMMIT} --push --auth $DOCKER_USER:$DOCKER_PASS;
-    done
+script:
+  for i in */Rockerfile; do
+    rocker_args="";
+    rocker_args_file="`dirname $i`/rocker_args";
+    if [[ -r $rocker_args_file ]]; then
+    rocker_args="`cat $rocker_args_file`";
+    fi;
+    rocker build --file $i ${rocker_args} --var BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var COMMIT=${COMMIT} --push --auth $DOCKER_USER:$DOCKER_PASS;
+  done
