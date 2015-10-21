@@ -1,4 +1,4 @@
-REQUIRE ["NOTMUCH_VERSION", "TRAVIS_COMMIT", "TRAVIS_BUILD_NUMBER"]
+REQUIRE ["NOTMUCH_VERSION", "COMMIT", "BUILD_NUMBER"]
 
 ##############
 # The build image
@@ -14,27 +14,28 @@ RUN apk add --update-cache git make gcc g++ zlib xapian-core-dev \
   && make install \
   && rm -rf ../notmuch.tar.gz ../notmuch-${NOTMUCH_VERSION}
 
-## ##############
-## # Export what we need
-##
-## MOUNT ../tools/deps.sh:/bin/deps
-## MOUNT ../tools/copy.sh:/bin/copy
-##
-## RUN mkdir -p /workspace \
-##   && copy /workspace /usr/bin/notmuch /usr/include/notmuch.h \
-##     /usr/lib/libnotmuch.so* $(deps /usr/bin/notmuch)
-##
-## EXPORT /workspace/ /
-##
-## ##############
-## # The runtime image
-##
-## FROM alpine
-## IMPORT /
+##############
+# Export what we need
+
+ADD https://github.com/kalbasit/docker-utils/raw/master/scripts/dcp /usr/bin/dcp
+ADD https://github.com/kalbasit/docker-utils/raw/master/scripts/rldd /usr/bin/rldd
+RUN chmod +x /usr/bin/dcp /usr/bin/rldd
+
+RUN mkdir -p /dist \
+  && dcp /dist /usr/bin/notmuch /usr/include/notmuch.h \
+    /usr/lib/libnotmuch.so* $(rldd /usr/bin/notmuch)
+
+EXPORT /dist /
+
+##############
+# The runtime image
+
+FROM alpine
+IMPORT /dist/ /
 CMD ["sh"]
 
 ##############
 # Push the image
 
-PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .TRAVIS_BUILD_NUMBER }}-{{ .TRAVIS_COMMIT }}
+PUSH kalbasit/notmuch:{{ .NOTMUCH_VERSION }}-{{ .BUILD_NUMBER }}-{{ .COMMIT }}
 PUSH kalbasit/notmuch:latest
