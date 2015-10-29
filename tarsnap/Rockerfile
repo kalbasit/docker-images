@@ -1,0 +1,15 @@
+REQUIRE ["COMMIT", "BUILD_NUMBER"]
+
+##############
+# The build image
+
+FROM alpine
+
+RUN apk add --update-cache tarsnap \
+  && rm -rf /var/cache/apk/*
+
+##############
+# Push the image
+
+PUSH kalbasit/tarsnap:{{ .BUILD_NUMBER }}-{{ .COMMIT }}
+PUSH kalbasit/tarsnap:latest
