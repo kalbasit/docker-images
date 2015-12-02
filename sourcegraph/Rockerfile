@@ -1,0 +1,38 @@
+REQUIRE ["COMMIT", "BUILD_NUMBER"]
+
+###################
+# Initial build image
+
+FROM sourcegraph/sourcegraph
+
+###################
+# Copy scripts and bins
+
+ADD https://github.com/kalbasit/docker-utils/raw/master/scripts/dcp /usr/bin/dcp
+ADD https://github.com/kalbasit/docker-utils/raw/master/scripts/rldd /usr/bin/rldd
+RUN chmod +x /usr/bin/dcp /usr/bin/rldd
+
+RUN mkdir -p /dist \
+  && dcp /dist \
+    /usr/bin/src $(rldd /usr/bin/src)
+
+EXPORT /dist /
+
+###################
+# Final build image
+
+FROM alpine:3.2
+IMPORT /dist/ /
+RUN apk add --update-cache go git mailcap make \
+  && rm -rf /var/cache/apk/* \
+  && src toolchain install go
+ENV GOPATH=/root PATH=/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+VOLUME ["/etc/sourcegraph", "/root/.sourcegraph"]
+EXPOSE 3080 3443
+CMD ["src", "--config=/etc/sourcegraph/config.ini", "serve"]
+
+###################
+# Push the image
+
+PUSH dailymotion/sourcegraph:latest
+PUSH dailymotion/sourcegraph:{{ .BUILD_NUMBER }}-{{ .COMMIT }}
