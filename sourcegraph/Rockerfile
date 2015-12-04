@@ -1,9 +1,9 @@
-REQUIRE ["COMMIT", "BUILD_NUMBER"]
+REQUIRE ["BUILD_NUMBER", "SOURCEGRAPH_COMMIT"]
 
 ###################
 # Initial build image
 
-FROM sourcegraph/sourcegraph
+FROM sourcegraph/sourcegraph:{{ .SOURCEGRAPH_COMMIT }}
 
 ###################
 # Copy scripts and bins
@@ -35,4 +35,4 @@ CMD ["src", "--config=/etc/sourcegraph/config.ini", "serve"]
 # Push the image
 
 PUSH dailymotion/sourcegraph:latest
-PUSH dailymotion/sourcegraph:{{ .BUILD_NUMBER }}-{{ .COMMIT }}
+PUSH dailymotion/sourcegraph:{{ .BUILD_NUMBER }}-{{ .SOURCEGRAPH_COMMIT }}
