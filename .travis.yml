@@ -13,11 +13,14 @@ env:
 before_script:
   - curl -L https://github.com/grammarly/rocker/releases/download/${ROCKER_VERSION}/rocker-${ROCKER_VERSION}_linux_amd64.tar.gz | sudo tar -C /usr/bin -xzf -
 script:
-  for i in */Rockerfile; do
-    rocker_args="";
-    rocker_args_file="`dirname $i`/rocker_args";
-    if [[ -r $rocker_args_file ]]; then
-    rocker_args="`cat $rocker_args_file`";
+  for i in `git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRTD "${TRAVIS_COMMIT_RANGE}"`; do
+    path=`echo $i | cut -d/ -f1`;
+    if [ -r "${path}/Rockerfile" ]; then
+      rocker_args="";
+      rocker_args_file="${path}/rocker_args";
+      if [[ -r $rocker_args_file ]]; then
+        rocker_args="`cat $rocker_args_file`";
+      fi;
+      rocker build --file $i ${rocker_args} --var BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var COMMIT=${COMMIT} --push --auth $DOCKER_USER:$DOCKER_PASS;
     fi;
-    rocker build --file $i ${rocker_args} --var BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var COMMIT=${COMMIT} --push --auth $DOCKER_USER:$DOCKER_PASS;
   done
