@@ -12,15 +12,16 @@ env:
     - secure: riwZUJZcx1szGE1PQi6X17YGNrAYC4FKoInMyXu+6F/nLqwp2yiOnfneIzfWWBmM07AFIQe/S8wcTmRBstHNbKBob6oLLVU07/J3eyLNMtbrQdsd7iQw0LHpIph6d0JbpSnQw/mkr5tgF9FMj61xWeO7EDuksUMk1QRTMEJTM7n6ae8wZy2tqWDma1hIWGnvNqXjUV8/c11L6Sx6kw+MSEuS0Rv9vwn6ZZEGI0vKSVSdZQDtjEpUAF/RUH1aHV5hLWtQz9iAJs/eZAvqT77bqDF4wB5lG37Tr/8+pYlGmZdKYo/jbghUkp85GF2J33pQnHcrfzlqs+5NcExaYDWl1rEB5H+a3hzfcG9t2NqBN/mQ0NkXeEsoRYHBiJImJY1uflp5/R1tJAyl8nOyTo0sxryTvBO05amAC8veqMW8fabxHjd9YU+VHAc6DyYsW7An5DGyC/15tuoR/5cdkEuw3uXANEcsvbwXLBnAmljxHqZlQfaZwlT3bukQTbCyQIZJw5iQ+6AtuXzoifny7sTZC7rwiSpegJUJP35wMOqX4bww2j8HypFSpYANsfD5yg50Cl82u3TiKw7AixohHTjLkBJ3MgBqfFR1aGmON0cvzrZ0X3xH3TLKJyEztD8D+dejKl6RbLJuEKASXqD7TFeqZuWuLIIWx2Pq5uaWtS/U59Y=
 before_script:
   - curl -L https://github.com/grammarly/rocker/releases/download/${ROCKER_VERSION}/rocker-${ROCKER_VERSION}_linux_amd64.tar.gz | sudo tar -C /usr/bin -xzf -
+  - git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRTD "${TRAVIS_COMMIT_RANGE}"
 script:
   for i in `git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRTD "${TRAVIS_COMMIT_RANGE}"`; do
-    path=`echo $i | cut -d/ -f1`;
-    if [ -r "${path}/Rockerfile" ]; then
+    p=`echo $i | cut -d/ -f1`;
+    if [ -r "${p}/Rockerfile" ]; then
       rocker_args="";
-      rocker_args_file="${path}/rocker_args";
+      rocker_args_file="${p}/rocker_args";
       if [[ -r $rocker_args_file ]]; then
         rocker_args="`cat $rocker_args_file`";
       fi;
-      rocker build --file $i ${rocker_args} --var BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var COMMIT=${COMMIT} --push --auth $DOCKER_USER:$DOCKER_PASS;
+      rocker build --file "${p}/Rockerfile" ${rocker_args} --var BUILD_NUMBER=$TRAVIS_BUILD_NUMBER --var COMMIT=${COMMIT} --push --auth $DOCKER_USER:$DOCKER_PASS;
     fi;
   done
