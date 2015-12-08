@@ -3,18 +3,30 @@ REQUIRE ["BUILD_NUMBER", "SOURCEGRAPH_COMMIT"]
 ###################
 # Initial build image
 
-FROM sourcegraph/sourcegraph:{{ .SOURCEGRAPH_COMMIT }}
+FROM golang:1.5
+
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+
+# Install nodejs
+RUN apt-get update \
+  && apt-get install -y curl \
+  && curl -sL https://deb.nodesource.com/setup_4.x | bash - \
+  && apt-get install -y nodejs
+
+# Compile and install Sourcegraph
+RUN go get github.com/tools/godep \
+  && mkdir -p $GOPATH/src/src.sourcegraph.com \
+  && git clone  https://src.sourcegraph.com/sourcegraph $GOPATH/src/src.sourcegraph.com/sourcegraph \
+  && cd $GOPATH/src/src.sourcegraph.com/sourcegraph \
+  && git checkout {{ .SOURCEGRAPH_COMMIT }} \
+  && git submodule update --init \
+  && make dist PACKAGEFLAGS="--os linux --skip-protoc --ignore-dirty"
 
 ###################
 # Copy scripts and bins
 
-ADD https://github.com/kalbasit/docker-utils/raw/master/scripts/dcp /usr/bin/dcp
-ADD https://github.com/kalbasit/docker-utils/raw/master/scripts/rldd /usr/bin/rldd
-RUN chmod +x /usr/bin/dcp /usr/bin/rldd
-
-RUN mkdir -p /dist \
-  && dcp /dist \
-    /usr/bin/src $(rldd /usr/bin/src)
+RUN mkdir -p /dist/usr/bin \
+  && cp /go/src/src.sourcegraph.com/sourcegraph/release/snapshot/linux-amd64 /dist/usr/bin/src
 
 EXPORT /dist /
 
@@ -23,10 +35,10 @@ EXPORT /dist /
 
 FROM alpine:3.2
 IMPORT /dist/ /
+ENV GO15VENDOREXPERIMENT=1 GOPATH=/root PATH=/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN apk add --update-cache go git mailcap make \
   && rm -rf /var/cache/apk/* \
   && src toolchain install go
-ENV GOPATH=/root PATH=/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 VOLUME ["/etc/sourcegraph", "/root/.sourcegraph"]
 EXPOSE 3080 3443
 CMD ["src", "--config=/etc/sourcegraph/config.ini", "serve"]
