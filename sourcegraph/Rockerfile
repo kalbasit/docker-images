@@ -25,8 +25,9 @@ RUN go get github.com/tools/godep \
 ###################
 # Copy scripts and bins
 
-RUN mkdir -p /dist/usr/bin \
-  && cp /go/src/src.sourcegraph.com/sourcegraph/release/snapshot/linux-amd64 /dist/usr/bin/src
+RUN mkdir -p /dist/usr/bin /dist/usr/share/sourcegraph \
+  && cp /go/src/src.sourcegraph.com/sourcegraph/release/snapshot/linux-amd64 /dist/usr/bin/src \
+  && cp /go/src/src.sourcegraph.com/sourcegraph/package/linux/default.ini /dist/usr/share/sourcegraph/config.ini
 
 EXPORT /dist /
 
@@ -37,8 +38,7 @@ FROM alpine:3.2
 IMPORT /dist/ /
 ENV GO15VENDOREXPERIMENT=1 GOPATH=/root PATH=/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN apk add --update-cache go git mailcap make \
-  && rm -rf /var/cache/apk/* \
-  && src toolchain install go
+  && rm -rf /var/cache/apk/*
 VOLUME ["/etc/sourcegraph", "/root/.sourcegraph"]
 EXPOSE 3080 3443
 CMD ["src", "--config=/etc/sourcegraph/config.ini", "serve"]
