@@ -3,10 +3,10 @@ MAINTAINER  Wael Nasreddine <wael.nasreddine@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive \
   DEBCONF_NONINTERACTIVE_SEEN=true \
-  PHABRICATOR_USER=kalbasit \
-  PHABRICATOR_COMMIT=61fcfc8de8980c5bc35bebfb6510fa431b601083 \
-  ARCANIST_COMMIT=807057087d65298e69bb8260db81bee1ae109084 \
-  LIBPHUTIL_COMMIT=6c0118085afdc6c6802849cac363efbc76def972
+  PHABRICATOR_USER=phacility \
+  PHABRICATOR_COMMIT=8f0d9c329566fcbab6c2c911bfddb15fdfee53cc \
+  ARCANIST_COMMIT=57f6fb59d73994d90cd94143787424ce0fdbf73b \
+  LIBPHUTIL_COMMIT=f43291e99d36045bc459e5133454c0d8fd8768ea
 
 RUN apt-get update && apt-get install -y build-essential git apache2 curl libapache2-mod-php5 \
         libmysqlclient18 mercurial mysql-client php-apc php5 php5-apcu php5-cli \
