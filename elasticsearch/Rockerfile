@@ -1,0 +1,6 @@
+FROM elasticsearch:{{ .ES_VERSION }}
+
+RUN /usr/share/elasticsearch/bin/plugin install cloud-aws
+
+PUSH kalbasit/aws-elasticsearch:{{ .ES_VERSION }}
+PUSH kalbasit/aws-elasticsearch:latest
