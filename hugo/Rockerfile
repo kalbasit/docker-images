@@ -1,0 +1,14 @@
+REQUIRE ["COMMIT", "BUILD_NUMBER"]
+
+##############
+# The build image
+
+FROM golang
+
+RUN go get -u github.com/spf13/hugo
+
+##############
+# Push the image
+
+PUSH kalbasit/hugo:{{ .BUILD_NUMBER }}-{{ .COMMIT }}
+PUSH kalbasit/hugo:latest
