@@ -1,0 +1,6 @@
+FROM alpine
+
+RUN apk --update-cache add lighttpd php cacti net-snmp-tools fcgi \
+  && sed -e 's:^.*"mod_fastcgi.conf".*$:include "mod_fastcgi.conf":g' -i /etc/lighttpd/lighttpd.conf \
+  && ln -s /usr/share/webapps/cacti /var/www/localhost/htdocs/cacti \
+  && chown -R lighttpd:lighttpd /var/www/localhost/htdocs/cacti \

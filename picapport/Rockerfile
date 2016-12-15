@@ -1,0 +1,3 @@
+FROM java:8-jre
+
+RUN curl -Lo /picapport.jar http://www.picapport.de/download/picapport-headless_v6.1.00.jar
