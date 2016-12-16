@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+if [ -z "${NOTMUCH_CONFIG}" ]; then
+  echo "please set NOTMUCH_CONFIG to the path of the config file"
+  exit 1
+fi
+
+if [ -z "${SLEEP_IN_SECONDS}" ]; then
+  echo "please set SLEEP_IN_SECONDS to the number of seconds to sleep before running 'notmuch new'"
+  exit 1
+fi
+
+while true; do
+  notmuch new
+  sleep "${SLEEP_IN_SECONDS}s"
+done
