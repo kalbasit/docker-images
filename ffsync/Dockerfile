@@ -1,6 +1,7 @@
 FROM alpine:3.5
 
-RUN apk add --update gcc g++ git make py-virtualenv python2-dev
+RUN apk add --update gcc g++ git make py-virtualenv python2-dev \
+  && rm -rf /var/cache/apk
 
 ARG ffsync_version=1.6.0
 
