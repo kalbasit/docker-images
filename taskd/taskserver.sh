@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 
-if [[ ! -f "${TASKDDATA}/config" ]]; then
+if [ ! -f "${TASKDDATA}/config" ]; then
   taskd init \
     && taskd config --force client.cert "${TASKDDATA}/client.cert.pem" \
     && taskd config --force client.key "${TASKDDATA}/client.key.pem" \
