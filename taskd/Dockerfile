@@ -27,11 +27,15 @@ RUN apk add --update build-base \
                        cmake \
                        gnutls-dev \
                        curl \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* \
+    && addgroup -g 53589 taskd \
+    && adduser -u 53589 -G taskd -D taskd
 
 ADD ./taskserver.sh /usr/local/bin/taskserver
 
 VOLUME $TASKDDATA
 EXPOSE 53589
+
+USER taskd
 
 CMD ["taskserver"]
