@@ -14,6 +14,9 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
   && apt-get install -y --no-install-recommends apt-utils
 
+# Update the system to benefit from any security update
+RUN apt-get dist-upgrade -y
+
 # install dependencies needed by the build
 RUN apt-get install -y --no-install-recommends build-essential libpng-dev python-minimal
 
