@@ -27,6 +27,12 @@ WORKDIR /usr/src/xo/server
 RUN git clone -b "$XO_SERVER_REF" --depth 1 https://github.com/vatesfr/xo-server.git .
 RUN git clone -b "$XO_WEB_REF" --depth 1 https://github.com/vatesfr/xo-web.git ../web
 
+# create the config file
+RUN sed " \
+		s!#'/': '/path/to/xo-web/dist/'!'/': '../web/dist/'!; \
+		s!#uri: redis://redis.company.lan/42!uri: redis://redis:6379!; \
+	" sample.config.yaml > .xo-server.yaml
+
 # node-gyp is required but not installed upstream
 # TODO: report it upstream
 RUN npm install -g node-gyp
@@ -39,12 +45,6 @@ RUN set -x \
 RUN set -x \
 	&& cd ../web \
 	&& yarn
-
-# create the config file
-RUN sed " \
-		s!#'/': '/path/to/xo-web/dist/'!'/': '../web/dist/'!; \
-		s!#uri: ''!uri: 'redis://redis:6379'!; \
-	" sample.config.yaml > .xo-server.yaml
 
 # clean up
 RUN apt-get remove -y apt-utils build-essential libpng-dev \
