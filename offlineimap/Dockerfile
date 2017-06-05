@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --update-cache offlineimap \
+RUN apk add --update-cache ca-certificates offlineimap \
   && rm -rf /var/cache/apk/*
 
 VOLUME /var/lib/offlineimap
