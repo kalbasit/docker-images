@@ -1,6 +1,6 @@
 FROM alpine
 
-ARG NOTMUCH_VERSION=0.24.1
+ARG NOTMUCH_VERSION=0.24.2
 
 COPY notmuch_new_loop /usr/bin/notmuch_new_loop
 
