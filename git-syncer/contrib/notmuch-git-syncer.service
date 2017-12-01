@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync Notmuch to Github
+Requires=docker.service
+After=docker.service
+
+[Service]
+ExecStartPre=/bin/sh -c "docker run --name git_syncer_volumes -v /data busybox true 2>/dev/null || true"
+ExecStart=/usr/bin/docker run -v /root/.ssh/notmuch-deploy-key:/root/.ssh/id_rsa --rm --volumes-from git_syncer_volumes kalbasit/git-syncer sync git://git.notmuchmail.org/git/notmuch git@github.com:notmuch/notmuch.git
+Type=oneshot
