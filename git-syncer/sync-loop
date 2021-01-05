@@ -9,6 +9,9 @@ fi
 p=`echo "${2}" | sed -r -e 's#.*(://|@)(.*)/[^/]*(\.git|$)#\2#g' -e 's#:#/#g'`
 r=`echo "${2}" | sed -r -e 's#.*/([^/]*)(\.git|$)#\1#g'`
 
+# Remove any .lock file that could have been left by a previous dead container
+find "/data/$p/${r}.git" -name '*.lock' -exec rm -f {} ';'
+
 eval `ssh-agent`
 if [ -r "$HOME/.ssh/id_rsa" ]; then
   ssh-add "$HOME/.ssh/id_rsa"
