@@ -1,11 +1,11 @@
 #!/bin/sh
 
 if [ "$#" -ne 3 ]; then
-	echo "USAGE: $0 <sleep_duration> <clone url> <push url>"
+  echo "USAGE: $0 <sleep_duration> <clone url> <push url>"
   exit 1
 fi
 
 while true; do
-	sync "$2" "$3"
-	sleep "$1"
+  sync "$2" "$3"
+  sleep "$1"
 done
