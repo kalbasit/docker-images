@@ -5,6 +5,21 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
+# Find the name of the directories
+p=`echo "${2}" | sed -r -e 's#.*(://|@)(.*)/[^/]*(\.git|$)#\2#g' -e 's#:#/#g'`
+r=`echo "${2}" | sed -r -e 's#.*/([^/]*)(\.git|$)#\1#g'`
+
+eval `ssh-agent`
+if [ -r "$HOME/.ssh/id_rsa" ]; then
+  ssh-add "$HOME/.ssh/id_rsa"
+fi
+
+if [ -n "$SSH_KEY" ]; then
+  echo -e "$SSH_KEY" > "$HOME/.ssh/$r"
+  chmod 400 "$HOME/.ssh/$r"
+  ssh-add "$HOME/.ssh/$r"
+fi
+
 while true; do
   sync "$2" "$3"
   sleep "$1"
