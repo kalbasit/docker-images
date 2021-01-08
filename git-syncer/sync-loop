@@ -24,6 +24,11 @@ if [ -n "$SSH_KEY" ]; then
 fi
 
 while true; do
+  if ! ssh-add -l; then
+    echo "SSH Agent is not running, make sure to start sync from sync-loop command"
+    exit 1
+  fi
+
   sync "$2" "$3"
   sleep "$1"
 done

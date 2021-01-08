@@ -6,11 +6,6 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-if ! ssh-add -l; then
-  echo "SSH Agent is not running, make sure to start sync from sync-loop command"
-  exit 1
-fi
-
 # Find the name of the directories
 p=`echo "${1}" | sed -r -e 's#.*(://|@)(.*)/[^/]*(\.git|$)#\2#g' -e 's#:#/#g'`
 r=`echo "${1}" | sed -r -e 's#.*/([^/]*)(\.git|$)#\1#g'`
